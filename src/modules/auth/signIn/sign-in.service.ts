@@ -17,7 +17,10 @@ export class SignInService {
     let user = await this.userModel.findOne({ email: info.email });
 
     if (user && (await bcrypt.compare(info.password, user.password))) {
-      let token = this._jwtService.sign({ name: user.name, email: user.email });
+      let token = this._jwtService.sign(
+        { name: user.name, email: user.email, id: user._id },
+        { secret: 'omm' },
+      );
       return { message: 'wellcome', token };
     } else {
       throw new HttpException('email Or pass wrong', HttpStatus.FOUND);
